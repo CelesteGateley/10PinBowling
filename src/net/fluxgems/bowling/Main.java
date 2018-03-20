@@ -12,6 +12,7 @@ public class Main {
     JFrame frame = new JFrame("10 Pin Bowling");
     private ArrayList<Player> players = new ArrayList<>();
     private JButton runTurnButton;
+    private JButton getWinnerButton;
     private JMenuBar topMenu;
 
     public Main() {
@@ -73,6 +74,23 @@ public class Main {
         topMenu.add(newGame);
         frame.setJMenuBar(topMenu);
 
+        getWinnerButton = new JButton("Who won?");
+        getWinnerButton.setPreferredSize(new Dimension(200, 50));
+
+        getWinnerButton.addActionListener((ActionEvent e) -> {
+            int highScore = 0;
+            Player winner = null;
+
+            for (Player p : players) {
+                if (p.getFinalScore() > highScore) {
+                    highScore = p.getFinalScore();
+                    winner = p;
+                }
+            }
+
+            JOptionPane.showMessageDialog(null, "The winner is " + winner.getName() + " with a score of " + highScore + "!");
+        });
+
 
         runTurnButton = new JButton("Play Frame");
         runTurnButton.setPreferredSize(new Dimension(200,50));
@@ -120,7 +138,15 @@ public class Main {
             }
 
             JPanel run = new JPanel(new BorderLayout());
-            run.add(runTurnButton, BorderLayout.EAST);
+
+            if (players.get(0).turnsSize() == 10) {
+                run.add(getWinnerButton, BorderLayout.EAST);
+            } else {
+                run.add(runTurnButton, BorderLayout.EAST);
+            }
+
+
+
             frame.add(run);
             frame.validate();
             frame.repaint();

@@ -11,10 +11,14 @@ public class TurnTen extends Turn {
 	private int firstScore;
 	private int secondScore;
     private int thirdScore;
+    private int cumulativeTotal;
+    private int extraScore;
+
 	private JLabel firstScoreField;
 	private JLabel secondScoreField;
 	private JLabel thirdScoreField;
 	private JLabel totalScoreLabel;
+
 	private Main instance;
     private Player player;
 
@@ -68,8 +72,7 @@ public class TurnTen extends Turn {
 
 	public void setThirdScore(int score) throws ValueException {
         if ((score < 0 || score > 10) || (firstScore + secondScore < 10 && score != 0) ||
-                (
-                        (firstScore == 10 && secondScore < 10) && secondScore + thirdScore > 10)) {
+                ((firstScore == 10 && secondScore < 10) && secondScore + thirdScore > 10)) {
             throw new ValueException("Score out of Range");
         }
         this.thirdScore = score;
@@ -91,7 +94,7 @@ public class TurnTen extends Turn {
 
         firstScoreField.setBorder(BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK));
         secondScoreField.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.BLACK));
-        thirdScoreField.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.BLACK));
+        thirdScoreField.setBorder(BorderFactory.createMatteBorder(0,1,1,1,Color.BLACK));
 
 		top.add(firstScoreField);
 		top.add(secondScoreField);
@@ -102,7 +105,50 @@ public class TurnTen extends Turn {
 
 		return tmp;
 	}
+    
+    @Override
+    public int getTotalScore() {
+        return firstScore + secondScore + thirdScore + extraScore;
+    }
+
+    public int getExtraScore() {
+        return extraScore;
+    }
+
+    @Override
+    public void setExtraScore(int extraScore) {
+        this.extraScore = extraScore;
+    }
+
+    public void updateExtraScore() {
+	    if (firstScore == 10 && secondScore == 10) {
+	        extraScore = secondScore + thirdScore*2;
+        } else if (firstScore == 10) {
+	        extraScore = secondScore + thirdScore;
+        } else if (firstScore + secondScore == 10) {
+	        extraScore = thirdScore;
+        }
+    }
+
+    @Override
+    public void refresh() {
+        int value = 0;
+        value += cumulativeTotal;
+        value += firstScore;
+        value += secondScore;
+        value += thirdScore;
+        value += extraScore;
+        totalScoreLabel.setText("" + (value));
+    }
+
+    @Override
+    public void setCumulativeTotal(int total) {
+	    this.cumulativeTotal = total;
+    }
 
 
-
+    @Override
+    public int getCumulativeTotal() {
+	    return this.cumulativeTotal;
+    }
 }

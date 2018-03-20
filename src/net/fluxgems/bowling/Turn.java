@@ -19,8 +19,6 @@ public class Turn {
 	private Player player;
 	private boolean isSpare;
 	private boolean isStrike;
-	private boolean previousSpare;
-	private boolean previousStrike;
 
 	public Turn(Main instance, Player player) {
 		firstScoreField = new JLabel("", SwingConstants.CENTER);
@@ -28,9 +26,6 @@ public class Turn {
 		totalScoreLabel = new JLabel("", SwingConstants.CENTER);
 		isSpare = false;
 		isStrike = false;
-		previousSpare = false;
-		previousStrike = false;
-
 		this.player = player;
 		this.instance = instance;
 	}
@@ -55,6 +50,7 @@ public class Turn {
 			firstScoreField.setText("X");
 			secondScore = 0;
 			secondScoreField.setText("-");
+			isStrike = true;
 		} else {
 		    firstScoreField.setText("" + firstScore);
         }
@@ -71,6 +67,7 @@ public class Turn {
         this.secondScore = score;
 		if (firstScore + secondScore == 10 && firstScore != 10) {
             secondScoreField.setText("/");
+            isSpare = true;
         } else if (secondScore == 0) {
 		    secondScoreField.setText("-");
         } else {
@@ -107,14 +104,6 @@ public class Turn {
 		return this.isStrike;
 	}
 
-	public void wasPreviousSpare(boolean wasPreviousSpare) {
-		this.previousSpare = wasPreviousSpare;
-	}
-
-	public void wasPreviousStrike(boolean wasPreviousStrike) {
-		this.previousStrike = wasPreviousStrike;
-	}
-
 	public void setExtraScore(int extraScore) {
 	    this.extraScore = extraScore;
     }
@@ -126,6 +115,10 @@ public class Turn {
 	    value += secondScore;
 	    value += extraScore;
         totalScoreLabel.setText("" + (value));
+    }
+    
+    public int getTotalScore() {
+        return firstScore + secondScore + extraScore;
     }
 
 }

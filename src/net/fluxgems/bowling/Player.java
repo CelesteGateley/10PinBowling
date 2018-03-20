@@ -23,6 +23,8 @@ public class Player {
 	    turns = new ArrayList<>(10);
     }
 
+    public String getName() {return this.name;}
+
 
 	public JPanel getPanel(boolean isLast) {
 		JPanel tmp = new JPanel(new GridLayout(1,turns.size()+1));
@@ -44,31 +46,56 @@ public class Player {
 
 	public void updateTurns() {
 		int total = 0;
-		boolean previousTurnSpare = false;
-		boolean previousTurnStrike = false;
+		Turn sndToLastTurn = null;
 		Turn previousTurn = null;
 		for (Turn t : turns) {
-			t.wasPreviousSpare(previousTurnSpare);
-		    t.wasPreviousStrike(previousTurnStrike);
-			t.setCumulativeTotal(total);
-			total += t.getFirstScore() + t.getSecondScore();
-           if (previousTurn != null) {
-                if (previousTurnSpare) {
-                    previousTurn.setExtraScore(t.getFirstScore());
-                } else if (previousTurnStrike) {
+            t.setCumulativeTotal(total);
+            if (t instanceof TurnTen){
+                if (sndToLastTurn.isStrike()) {
+                    sndToLastTurn.setExtraScore(previousTurn.getFirstScore() + t.getFirstScore());
+                }
+                if (previousTurn.isStrike()) {
                     previousTurn.setExtraScore(t.getFirstScore() + t.getSecondScore());
                 }
-
+                ((TurnTen) t).updateExtraScore();
+            } else if (previousTurn != null) {
+                if (sndToLastTurn == null) {
+                    if (previousTurn.isStrike() && !t.isStrike()) {
+                        previousTurn.setExtraScore(t.getFirstScore() + t.getSecondScore());
+                    } else if (previousTurn.isSpare()) {
+                        previousTurn.setExtraScore(t.getFirstScore());
+                    }
+                } else {
+                    if (previousTurn.isStrike() && !t.isStrike()) {
+                        previousTurn.setExtraScore(t.getFirstScore() + t.getSecondScore());
+                    } else if (previousTurn.isSpare()) {
+                        previousTurn.setExtraScore(t.getFirstScore());
+                    } else if (sndToLastTurn.isStrike() && previousTurn.isStrike()) {
+                        sndToLastTurn.setExtraScore(previousTurn.getFirstScore() + t.getFirstScore());
+                    }
+                }
             }
-            previousTurnSpare = t.isSpare();
-            previousTurnStrike = t.isStrike();
+
+            sndToLastTurn = previousTurn;
             previousTurn = t;
+            total += t.getTotalScore();
+            if (sndToLastTurn != null) { sndToLastTurn.refresh(); }
+            if (previousTurn != null) { previousTurn.refresh(); }
             t.refresh();
 		}
 
 		instance.refreshScreen();
 
 	}
+
+	public int getFinalScore() {
+	    TurnTen t = (TurnTen) turns.get(turns.size()-1);
+	    return t.getTotalScore() + t.getCumulativeTotal();
+    }
+
+    public int turnsSize() {
+	    return turns.size();
+    }
 
 	public void playFrame() {
 	    if (!isAI) {
@@ -104,6 +131,7 @@ public class Player {
                         complete = true;
                     } else {
                         JOptionPane.showMessageDialog(instance.frame, "No More Turns can be Played!");
+                        complete = true;
                     }
                 } catch (ValueException | NumberFormatException e) {
                     JOptionPane.showMessageDialog(instance.frame, "One or More of those scores were incorrect, please try again!");
