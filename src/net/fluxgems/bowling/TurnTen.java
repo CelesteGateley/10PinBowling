@@ -5,8 +5,9 @@ import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 
-public class TurnTen extends Turn {
+public class TurnTen extends Turn implements Serializable{
 
 	private int firstScore;
 	private int secondScore;

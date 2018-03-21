@@ -4,10 +4,11 @@ import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Player {
+public class Player implements Serializable{
 
 	private String name;
 	private ArrayList<Turn> turns;
