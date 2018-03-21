@@ -49,14 +49,21 @@ public class Player {
 		Turn sndToLastTurn = null;
 		Turn previousTurn = null;
 		for (Turn t : turns) {
-            t.setCumulativeTotal(total);
-            if (t instanceof TurnTen){
-                if (sndToLastTurn.isStrike()) {
+
+            if (t instanceof TurnTen) {
+                if (sndToLastTurn.isStrike() && previousTurn.isStrike()) {
                     sndToLastTurn.setExtraScore(previousTurn.getFirstScore() + t.getFirstScore());
+                } else if (sndToLastTurn.isStrike() && !previousTurn.isStrike()) {
+                    sndToLastTurn.setExtraScore(previousTurn.getFirstScore() + previousTurn.getSecondScore());
+                } else if (sndToLastTurn.isSpare()) {
+                    sndToLastTurn.setExtraScore(previousTurn.getFirstScore());
                 }
                 if (previousTurn.isStrike()) {
                     previousTurn.setExtraScore(t.getFirstScore() + t.getSecondScore());
+                } else if (previousTurn.isSpare()) {
+                    previousTurn.setExtraScore(t.getFirstScore());
                 }
+                previousTurn.setCumulativeTotal(previousTurn.getCumulativeTotal() + previousTurn.getExtraScore());
                 ((TurnTen) t).updateExtraScore();
             } else if (previousTurn != null) {
                 if (sndToLastTurn == null) {
@@ -76,11 +83,12 @@ public class Player {
                 }
             }
 
-            sndToLastTurn = previousTurn;
-            previousTurn = t;
+            t.setCumulativeTotal(total);
             total += t.getTotalScore();
             if (sndToLastTurn != null) { sndToLastTurn.refresh(); }
             if (previousTurn != null) { previousTurn.refresh(); }
+            sndToLastTurn = previousTurn;
+            previousTurn = t;
             t.refresh();
 		}
 

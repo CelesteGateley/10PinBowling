@@ -108,6 +108,8 @@ public class Turn {
 	    this.extraScore = extraScore;
     }
 
+    public int getExtraScore() { return this.extraScore; }
+
     public void refresh() {
 	    int value = 0;
 	    value += cumulativeTotal;

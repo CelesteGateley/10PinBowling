@@ -17,7 +17,7 @@ public class Main {
 
     public Main() {
 
-        frame.setBounds(100,100,1300,250);
+        frame.setBounds(100,100,1000,250);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         frame.addComponentListener(new ComponentListener() {
@@ -118,7 +118,7 @@ public class Main {
 
     public void refreshScreen() {
         frame.setJMenuBar(topMenu);
-        if (players.size() > 0) {
+        if (!players.isEmpty()) {
             frame.getContentPane().removeAll();
             frame.getRootPane().setDefaultButton(runTurnButton);
             frame.setJMenuBar(topMenu);

@@ -33,6 +33,16 @@ public class TurnTen extends Turn {
     }
 
     @Override
+    public int getFirstScore() {
+	    return this.firstScore;
+    }
+
+    @Override
+    public int getSecondScore() {
+        return this.secondScore;
+    }
+
+    @Override
     public void setFirstScore(int score) throws ValueException {
         if (score < 0 || score > 10 ) { throw new ValueException("Scores out of Range"); }
         if (score + secondScore > 10) { throw new ValueException("Scores out of range"); }
@@ -41,8 +51,6 @@ public class TurnTen extends Turn {
             firstScoreField.setText("-");
         } else if (score == 10) {
             firstScoreField.setText("X");
-            secondScore = 0;
-            secondScoreField.setText("-");
         } else {
             firstScoreField.setText("" + firstScore);
         }
